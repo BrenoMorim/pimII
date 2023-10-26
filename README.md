@@ -9,10 +9,16 @@ Nesse repositório encontra-se o código do projeto desenvolvido para a conclus�
 - Ferramenta Git instalada
 - Um compilador da linguagem C instalado
   
-De compilador, o make é uma das melhores opções e pode ser instalado no windows 10/11 de forma fácil com o seguinte comando no PowerShell:
+De compilador, o make é uma das melhores opções e pode ser instalado no Windows 10/11 de forma fácil com o seguinte comando no PowerShell:
 
 ```sh
 winget install GnuWin32.Make
+```
+
+Para instalar o Git, podemos instalar através do site <https://git-scm.com/downloads>, ou também é possível rodar um simples comando no PowerShell do Windows 10/11:
+
+```sh
+winget install -e --id Git.Git
 ```
 
 O Git é necessário para clonar o repositório e realizar o download, enquanto o make é fundamental para que o sistema seja compilado com instruções compatíveis com o sistema operacional da sua máquina. A compilação dos arquivos do repositório foi feita em um ambiente Linux Ubuntu, não compatível com Windows.
