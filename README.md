@@ -2,7 +2,7 @@
 
 ## Museu Multitemático James Gosling
 
-Nesse repositório encontra-se o código do projeto desenvolvido para a conclusão do segundo semestre do curso de Análise e Desenvolvimento de Sistemas da Universidade Paulista.
+Nesse repositório encontra-se o código do projeto desenvolvido para a conclusão do segundo semestre do curso de Análise e Desenvolvimento de Sistemas da Universidade Paulista. A documentação detalhada do código está presente no arquivo "documentacaoPimII.docx".
 
 ### Requisitos
 
