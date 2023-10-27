@@ -399,6 +399,7 @@ int main() {
 
     abrirOuCriarArquivosCSV();
     contaIngressosVendidos();
+    contaPesquisasRespondidas();
 
     imprimeMensagemBoasVindas();
 
