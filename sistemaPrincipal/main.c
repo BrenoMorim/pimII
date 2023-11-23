@@ -426,6 +426,7 @@ int main() {
             break;
         } else {
             imprime("Escolha uma opção válida!");
+            break;
         }
         pausar();
     }
