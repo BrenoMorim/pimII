@@ -32,7 +32,17 @@ git clone https://github.com/BrenoMorim/pimII.git museu
 cd ./museu
 ```
 
+Após fazer o clonagem do repositório, é possível executar o seguinte comando para abrir o editor de código Visual Studio Code na pasta do projeto, é preciso estar na pasta /museu, que contém os arquivos do projeto:
+
+```sh
+code .
+```
+
+Caso você não tenha o Visual Studio Code instalado, você pode realizar o download por esse link: <https://code.visualstudio.com/download>.
+
 ### Instruções para rodar o sistema principal
+
+É importante ressaltar que o sistema deve ser executado na mesma pasta que os arquivos .csv que contém os dados, caso os arquivos não sejam encontrados, eles serão criados do zero.
 
 ```sh
 cd ./sistemaPrincipal
@@ -42,7 +52,7 @@ make main
 
 ### Instruções para rodar o programa dos questionários
 
-Há 4 arquivos .txt na pasta dos questionários, cada um referente a um tema em exposição no museu. Para alterar o tema, basta renomear o arquivo que é chamado "questionario.txt" para um outro nome e trocar o nome do arquivo com o questionário que deseja para "questionario.txt".
+Há 4 arquivos .txt na pasta dos questionários, cada um referente a um tema em exposição no museu. Para responder eles, basta executar o programa e indicar qual questionário deseja responder. É importante que o programa esteja na mesma pasta que os arquivos .txt para que eles sejam encontrados pelo programa.
 
 ```sh
 cd ./questionario

@@ -29,79 +29,121 @@ int getLinhas(char* nomeArquivo) {
 	return linhas;
 }
 
-void insereLinhaCSV(char numeroQuestao, char respostaUsuario, int acertou) {
+void insereLinhaCSV(char numeroQuestao, char respostaUsuario, int acertou, char questionarioEscolhido) {
 	FILE* respostas = fopen("respostas.csv", "r");
 	if (respostas == NULL) {
 		respostas = fopen("respostas.csv", "w");
-		fprintf(respostas, "QUESTAO,RESPOSTA,ACERTOU\n");
+		fprintf(respostas, "QUESTAO,RESPOSTA,ACERTOU,QUESTIONARIO\n");
 		fclose(respostas);
 	}
 	respostas = fopen("respostas.csv", "a");
-	fprintf(respostas, "%c,%c,%d\n", numeroQuestao, respostaUsuario, acertou);
+	fprintf(respostas, "%c,%c,%d,%c\n", numeroQuestao, respostaUsuario, acertou, questionarioEscolhido);
 	fclose(respostas);
 }
 
 int main() {
 	setlocale(LC_ALL, "Portuguese");
-	int numeroLinhas = getLinhas("questionario.txt");
-	int acertos = 0;
-	FILE* questoes = fopen("questionario.txt", "r");
+	while (1) {
+		int acertos = 0;
+		char questionarioEscolhido = '0';
+		do {
+			printf("\n\tQual questionário você deseja responder?\n");
+			printf("\n\tDigite S para Santos Dumont, O para Olimpíadas, A para Semana de Arte Moderna, J para Java ou X para sair\n\t");
+			questionarioEscolhido = getchar();
 
-	if (questoes == NULL) {
-		printf("\n\tArquivo \"questionario.txt\" com as questões não foi encontrado!\n\n");
-		exit(1);
-	}
-	
-	char titulo[100];
-	fgets(titulo, 100, questoes);
-
-	printf("\n\t"); 
-	for(int i = 0; i < strlen(titulo) - 2; i++) printf("-"); 
-	printf("\n\t%s", titulo);
-	printf("\t"); 
-	for(int i = 0; i < strlen(titulo) - 2; i++) printf("-"); 
-	printf("\n");
-
-	char numeroQuestao;
-	for (int i = 1; i < numeroLinhas / 4; i++) {
-		char pergunta[200];
-		fgets(pergunta, 200, questoes);
-		printf("\n\t%s", pergunta);
-		numeroQuestao = pergunta[0];
-
-		char respostaUsuario[1];
-		int usuarioAcertou = 0;
-		char alternativaCorreta;
-
-		for (int j = 0; j < 3; j++) {
-			char alternativa[100];
-			fgets(alternativa, 100, questoes);
-			int inicio = 0;
-			if (alternativa[0] == '*') {
-				alternativaCorreta = alternativa[1];
-				inicio = 1;
+			if (questionarioEscolhido != 'A' && questionarioEscolhido != 'a' && questionarioEscolhido != 'O' &&
+				questionarioEscolhido != 'o' && questionarioEscolhido != 'J' && questionarioEscolhido != 'j' && 
+			questionarioEscolhido != 'S' && questionarioEscolhido != 's' && questionarioEscolhido != 'x' && 
+			questionarioEscolhido != 'X') {
+				printf("\n\tDigite uma opção válida!\n");
 			}
-			printf("\n\t");
-			for (int c = inicio; c < strlen(alternativa); c++) printf("%c", alternativa[c]);
-		}
-		printf("\n\tDigite sua resposta (em letras minúsculas): ");
-		gets(respostaUsuario);
+		} while (questionarioEscolhido != 'A' && questionarioEscolhido != 'a' && questionarioEscolhido != 'O' &&
+				questionarioEscolhido != 'o' && questionarioEscolhido != 'J' && questionarioEscolhido != 'j' && 
+				questionarioEscolhido != 'S' && questionarioEscolhido != 's' && questionarioEscolhido != 'x' && 
+				questionarioEscolhido != 'X');
 
-		int acertou = 0;
-		if (respostaUsuario[0] == alternativaCorreta) {
-			printf("\n\tVocê acertou =)\n");	
-			acertou = 1;
-			acertos++;
-		} else {
-			printf("\n\tVocê errou =(\n");
+		char* nomeArquivo;
+
+		if (questionarioEscolhido == 'a' || questionarioEscolhido == 'A') {
+			nomeArquivo = "questionarioSemana.txt";
+		} else if (questionarioEscolhido == 'j' || questionarioEscolhido == 'J') {
+			nomeArquivo = "questionarioJava.txt";
+		} else if (questionarioEscolhido == 'O' || questionarioEscolhido == 'o') {
+			nomeArquivo = "questionarioOlimpiadas.txt";
+		} else if (questionarioEscolhido == 's' || questionarioEscolhido == 'S') {
+			nomeArquivo = "questionarioSantosDumont.txt";
+		} else if (questionarioEscolhido == 'x' || questionarioEscolhido == 'X') {
+			break;
 		}
-		insereLinhaCSV(numeroQuestao, respostaUsuario[0], acertou);
+
+		FILE* questoes = fopen(nomeArquivo, "r");
+
+		int numeroLinhas = getLinhas(nomeArquivo);
+		if (questoes == NULL) {
+			printf("\n\tArquivo \"%s\" com as questões não foi encontrado!\n\n", nomeArquivo);
+			exit(1);
+		}
+		
+		char titulo[100];
+		fgets(titulo, 100, questoes);
+
+		printf("\n\t"); 
+		for(int i = 0; i < strlen(titulo) - 2; i++) printf("-"); 
+		printf("\n\t%s", titulo);
+		printf("\t"); 
+		for(int i = 0; i < strlen(titulo) - 2; i++) printf("-"); 
+		printf("\n");
+
+		char numeroQuestao;
+		for (int i = 1; i < numeroLinhas / 4; i++) {
+			char pergunta[200];
+			fgets(pergunta, 200, questoes);
+			printf("\n\t%s", pergunta);
+			numeroQuestao = pergunta[0];
+
+			char respostaUsuario = '0';
+			int usuarioAcertou = 0;
+			char alternativaCorreta;
+
+			for (int j = 0; j < 3; j++) {
+				char alternativa[100];
+				fgets(alternativa, 100, questoes);
+				int inicio = 0;
+				if (alternativa[0] == '*') {
+					alternativaCorreta = alternativa[1];
+					inicio = 1;
+				}
+				printf("\n\t");
+				for (int c = inicio; c < strlen(alternativa); c++) printf("%c", alternativa[c]);
+			}
+			getchar();
+			do {
+				printf("\n\tDigite sua resposta (a, b ou c): ");
+				respostaUsuario = getchar();
+
+				if (respostaUsuario != 'a' && respostaUsuario != 'b' && respostaUsuario != 'c') {
+					printf("\n\tDigite uma opção válida (a, b ou c)\n");
+					getchar();
+				}
+			} while(respostaUsuario != 'a' && respostaUsuario != 'b' && respostaUsuario != 'c');
+
+			int acertou = 0;
+			if (respostaUsuario == alternativaCorreta) {
+				printf("\n\tVocê acertou =)\n");	
+				acertou = 1;
+				acertos++;
+			} else {
+				printf("\n\tVocê errou =(\n");
+			}
+			insereLinhaCSV(numeroQuestao, respostaUsuario, acertou, questionarioEscolhido);
+			pausar();
+		}
+		printf("\n\tQuestionário respondido com sucesso!");
+		printf("\n\tTotal de acertos: %d\n", acertos);
+		
+		fclose(questoes);
 		pausar();
+		getchar();
 	}
-	printf("\n\tQuestionário respondido com sucesso!");
-	printf("\n\tTotal de acertos: %d\n", acertos);
-	
-	fclose(questoes);
-	pausar();
 	return 0;
 }

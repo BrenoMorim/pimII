@@ -24,8 +24,8 @@ typedef struct Venda {
     int ano;
     int quantidade_ingressos;
     float valor_entrada;
-    int tipo_ingresso;
-    char* exposicao;
+    char tipo_ingresso;
+    char exposicao;
 };
 
 void pausar() {
@@ -103,37 +103,62 @@ void contaPesquisasRespondidas() {
 }
 
 void vendaDeIngresso(int dia, int mes, int ano) {
-    int tipo_ingresso;
+    char tipo_ingresso;
     struct Venda venda;
     venda.dia = dia; venda.mes = mes; venda.ano = ano;
 
     imprime("Venda de ingresso: ");
-    imprime("Digite o tipo de ingresso: ");
-    imprime("0 para ISENÇÃO, 1 para MEIA ESTUDANTE, 2 para MEIA e 3 para INTEIRA");
-    printf("\t"); scanf("%d", &tipo_ingresso);
+    do {
+        getchar();
+        imprime("Digite o tipo de ingresso: ");
+        imprime("0 para ISENÇÃO, 1 para MEIA ESTUDANTE, 2 para MEIA e 3 para INTEIRA");
+        printf("\t"); tipo_ingresso = getchar();
+        if (tipo_ingresso < '0' || tipo_ingresso > '3') {
+            imprime("Tipo de ingresso inválido!");
+        }
+    } while (tipo_ingresso < '0' || tipo_ingresso > '3');
 
     venda.tipo_ingresso = tipo_ingresso;
-    if (tipo_ingresso == 0) venda.valor_entrada = ISENCAO;
-    else if (tipo_ingresso == 1) venda.valor_entrada = MEIA_ESTUDANTE;
-    else if (tipo_ingresso == 2) venda.valor_entrada = MEIA;
+    if (venda.tipo_ingresso == '0') venda.valor_entrada = ISENCAO;
+    else if (venda.tipo_ingresso == '1') venda.valor_entrada = MEIA_ESTUDANTE;
+    else if (venda.tipo_ingresso == '2') venda.valor_entrada = MEIA;
     else venda.valor_entrada = INTEIRA;
 
-    imprime("Digite a quantidade de ingressos (do mesmo tipo) a serem vendidos: ");
-    printf("\t"); scanf("%d", &venda.quantidade_ingressos);
+    do {
+        imprime("Digite a quantidade de ingressos (do mesmo tipo) a serem vendidos: ");
+        printf("\t"); scanf("%d", &venda.quantidade_ingressos);
 
-    char exposicao[36];
-    gets(exposicao);
-    imprime("Digite a exposição referente ao ingresso (no máximo 36 caracteres): ");
-    printf("\t"); gets(exposicao);
+        if (venda.quantidade_ingressos <= 0) {
+            imprime("Quantidade de ingressos deve ser maior que zero!");
+            venda.quantidade_ingressos = 0;
+        }
+    } while (venda.quantidade_ingressos <= 0);
+
+    char exposicao;
+    do {
+        getchar();
+        imprime("Digite a exposição referente ao ingresso: ");
+        imprime("As opções são:");
+        imprime("S para Santos Dumont, A para Semana de Arte Moderna, O para Olimpíadas, J para Java");
+        printf("\t"); exposicao = getchar();
+
+        if (exposicao != 'A' && exposicao != 'a' && exposicao != 'O' && 
+            exposicao != 'o' && exposicao != 'J' && exposicao != 'j' && exposicao != 'S' && exposicao != 's') 
+        {
+            imprime("Exposição inválida, digite somente A, S, O ou J!");
+            imprime("");
+            imprime("Digite qualquer tecla para continuar");
+        }
+    } while(exposicao != 'A' && exposicao != 'a' && exposicao != 'O' && exposicao != 'o' && exposicao != 'J' && exposicao != 'j' && exposicao != 'S' && exposicao != 's');
+
     venda.exposicao = exposicao;
-
     FILE* fcsv = fopen("vendas.csv", "a");
 
     imprime("ID dos ingressos gerados: ");
     printf("\t");
     for (int i = ingressos_vendidos; i < ingressos_vendidos + venda.quantidade_ingressos; i++) {
         fprintf(
-            fcsv, "%d,%d,%d,%d,%.2f,%d,%s\n", 
+            fcsv, "%d,%d,%d,%d,%.2f,%d,%c\n", 
             i, venda.dia, venda.mes, venda.ano, venda.valor_entrada, venda.tipo_ingresso, venda.exposicao
         );
         printf("%d ", i);
@@ -365,7 +390,10 @@ float pegaNumeroReal(char* mensagem, int minimo, int maximo) {
     do {
         imprime(mensagem);
         printf("\t"); scanf("%f", &num);
-        if (num < minimo || num > maximo) imprime("Digite um número válido!");
+        if (num < minimo || num > maximo) {
+            printf("\n\tDigite um número entre %d e %d!\n", minimo, maximo);
+            getchar();
+        }
     } while(num < minimo || num > maximo);
     return num;
 }
@@ -390,7 +418,7 @@ void pesquisaDeSatisfacao(int dia, int mes, int ano) {
 int main() {
     setlocale(LC_ALL, "Portuguese");
 
-    int opcao = 0;
+    char opcao = '0';
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     int dia = tm.tm_mday;
@@ -406,29 +434,30 @@ int main() {
     while (1) {
         mostraOpcoes();
         imprime("\n\tQual ação deseja fazer? ");
-        printf("\t"); scanf("%d", &opcao);
+        printf("\t"); opcao = getchar();
 
         imprime("\n");
-        if (opcao == 1) {
+        if (opcao == '1') {
             vendaDeIngresso(dia, mes, ano);
-        } else if (opcao == 2) {
+        } else if (opcao == '2') {
             mostraOsPrecos();
-        } else if (opcao == 3) {
+        } else if (opcao == '3') {
             buscaIngressoPorId();
-        } else if (opcao == 4) {
+        } else if (opcao == '4') {
             listarVendasDoDia();
-        } else if (opcao == 5) {
+        } else if (opcao == '5') {
             relatorioVendasDoMes();
-        } else if (opcao == 6) {
+        } else if (opcao == '6') {
             pesquisaDeSatisfacao(dia, mes, ano);
-        } else if (opcao == 7) {
+        } else if (opcao == '7') {
             imprime("Desligando o sistema!");
             break;
         } else {
+            opcao = '0';
             imprime("Escolha uma opção válida!");
-            break;
         }
         pausar();
+        getchar();
     }
 
     imprime("\n - Fim - \n");
