@@ -103,22 +103,21 @@ void contaPesquisasRespondidas() {
 }
 
 void vendaDeIngresso(int dia, int mes, int ano) {
-    char tipo_ingresso;
+    char tipo_ingresso[1];
     struct Venda venda;
     venda.dia = dia; venda.mes = mes; venda.ano = ano;
 
     imprime("Venda de ingresso: ");
     do {
-        getchar();
         imprime("Digite o tipo de ingresso: ");
         imprime("0 para ISENÇÃO, 1 para MEIA ESTUDANTE, 2 para MEIA e 3 para INTEIRA");
-        printf("\t"); tipo_ingresso = getchar();
-        if (tipo_ingresso < '0' || tipo_ingresso > '3') {
+        printf("\t"); gets(tipo_ingresso);
+        if (tipo_ingresso[0] < '0' || tipo_ingresso[0] > '3') {
             imprime("Tipo de ingresso inválido!");
         }
-    } while (tipo_ingresso < '0' || tipo_ingresso > '3');
+    } while (tipo_ingresso[0] < '0' || tipo_ingresso[0] > '3');
 
-    venda.tipo_ingresso = tipo_ingresso;
+    venda.tipo_ingresso = tipo_ingresso[0];
     if (venda.tipo_ingresso == '0') venda.valor_entrada = ISENCAO;
     else if (venda.tipo_ingresso == '1') venda.valor_entrada = MEIA_ESTUDANTE;
     else if (venda.tipo_ingresso == '2') venda.valor_entrada = MEIA;
@@ -128,11 +127,12 @@ void vendaDeIngresso(int dia, int mes, int ano) {
         imprime("Digite a quantidade de ingressos (do mesmo tipo) a serem vendidos: ");
         printf("\t"); scanf("%d", &venda.quantidade_ingressos);
 
-        if (venda.quantidade_ingressos <= 0) {
-            imprime("Quantidade de ingressos deve ser maior que zero!");
+        if (venda.quantidade_ingressos <= 0 || venda.quantidade_ingressos > 10) {
+            imprime("Quantidade de ingressos deve ser maior que zero e menor que 10!");
+            getchar();
             venda.quantidade_ingressos = 0;
         }
-    } while (venda.quantidade_ingressos <= 0);
+    } while (venda.quantidade_ingressos <= 0 || venda.quantidade_ingressos > 10);
 
     char exposicao;
     do {
@@ -146,8 +146,8 @@ void vendaDeIngresso(int dia, int mes, int ano) {
             exposicao != 'o' && exposicao != 'J' && exposicao != 'j' && exposicao != 'S' && exposicao != 's') 
         {
             imprime("Exposição inválida, digite somente A, S, O ou J!");
-            imprime("");
             imprime("Digite qualquer tecla para continuar");
+            gets();
         }
     } while(exposicao != 'A' && exposicao != 'a' && exposicao != 'O' && exposicao != 'o' && exposicao != 'J' && exposicao != 'j' && exposicao != 'S' && exposicao != 's');
 
@@ -158,7 +158,7 @@ void vendaDeIngresso(int dia, int mes, int ano) {
     printf("\t");
     for (int i = ingressos_vendidos; i < ingressos_vendidos + venda.quantidade_ingressos; i++) {
         fprintf(
-            fcsv, "%d,%d,%d,%d,%.2f,%d,%c\n", 
+            fcsv, "%d,%d,%d,%d,%.2f,%c,%c\n", 
             i, venda.dia, venda.mes, venda.ano, venda.valor_entrada, venda.tipo_ingresso, venda.exposicao
         );
         printf("%d ", i);
@@ -223,11 +223,18 @@ void buscaIngressoPorId() {
     }
 }
 
-void listarVendasDoDia() {
-    int diaBusca, mesBusca, anoBusca;
+void listarVendasDoDia(int anoAtual) {
+    int diaBusca = 0, mesBusca = 0, anoBusca = 0;
 
-    imprime("Digite a data para listar as vendas, no formato dd/MM/YYYY (20/11/2023 por exemplo): ");
-    printf("\t"); scanf("%d/%d/%d", &diaBusca, &mesBusca, &anoBusca);
+    do {
+        imprime("Digite a data para listar as vendas, no formato dd/MM/YYYY (20/11/2023 por exemplo): ");
+        printf("\t"); scanf("%d/%d/%d", &diaBusca, &mesBusca, &anoBusca);
+    
+        if (diaBusca <= 0 || diaBusca > 31 || mesBusca <= 0 || mesBusca > 12 || anoBusca < 2000 || anoBusca > anoAtual) {
+            imprime("Digite uma data válida!");
+            gets();
+        }
+    } while (diaBusca <= 0 || diaBusca > 31 || mesBusca <= 0 || mesBusca > 12 || anoBusca < 2000 || anoBusca > anoAtual);
 
     FILE* vendas = fopen("vendas.csv", "r");
     if (vendas == NULL) {
@@ -251,13 +258,22 @@ void listarVendasDoDia() {
         
         if (dia == diaBusca && mes == mesBusca && ano == anoBusca) {
             char* tipoIngressoLabel;
-            if (tipoIngresso == 0) tipoIngressoLabel = "Isenta";
-            if (tipoIngresso == 1) tipoIngressoLabel = "Meia de Estudante";
-            if (tipoIngresso == 2) tipoIngressoLabel = "Meia";
-            if (tipoIngresso == 3) tipoIngressoLabel = "Inteira";
+            char* exposicaoLabel;
+            
+            if (tipoIngresso == 0 || tipoIngresso == '0') tipoIngressoLabel = "Isenta";
+            else if (tipoIngresso == 1 || tipoIngresso == '1') tipoIngressoLabel = "Meia de Estudante";
+            else if (tipoIngresso == 2 || tipoIngresso == '2') tipoIngressoLabel = "Meia";
+            else if (tipoIngresso == 3 || tipoIngresso == '3') tipoIngressoLabel = "Inteira";
+            
+            if (exposicao[0] == 's' || exposicao[0] == 'S') exposicaoLabel = "Santos Dumont";
+            else if (exposicao[0] == 'a' || exposicao[0] == 'A') exposicaoLabel = "Semana de Arte Moderna";
+            else if (exposicao[0] == 'o' || exposicao[0] == 'O') exposicaoLabel = "Olimpíadas de Paris";
+            else if (exposicao[0] == 'j' || exposicao[0] == 'J') exposicaoLabel = "Linguagem Java";
+            else exposicaoLabel = exposicao;
+            
             printf(
                 "\tID: %d, Data: %d/%d/%d, Valor: R$%.2f, Tipo de Entrada: %s, Exposição: %s\n",
-                id, dia, mes, ano, valor, tipoIngressoLabel, exposicao
+                id, dia, mes, ano, valor, tipoIngressoLabel, exposicaoLabel
             );
         }
         lastId = id;
@@ -266,11 +282,18 @@ void listarVendasDoDia() {
     printf("\n\tVendas do dia %d/%d/%d foram listadas!\n", diaBusca, mesBusca, anoBusca);
 }
 
-void relatorioVendasDoMes() {
-    int mesBusca, anoBusca;
+void relatorioVendasDoMes(int anoAtual) {
+    int mesBusca = 0, anoBusca = 0;
 
-    imprime("Digite a data para listar as vendas no formato MM/YYYY (11/2023 para novembro de 2023, por exemplo): ");
-    printf("\t"); scanf("%d/%d", &mesBusca, &anoBusca);
+    do {
+        imprime("Digite a data para listar as vendas no formato MM/YYYY (11/2023 para novembro de 2023, por exemplo): ");
+        printf("\t"); scanf("%d/%d", &mesBusca, &anoBusca);
+
+        if (mesBusca < 0 || mesBusca > 12 || anoBusca < 2000 || anoBusca > anoAtual) {
+            imprime("Digite uma data válida!");
+            gets();
+        }
+    } while(mesBusca < 0 || mesBusca > 12 || anoBusca < 2000 || anoBusca > anoAtual);
     
     char formatoNomeArquivo[] = "RelatorioVendas-%d_%d.md";
     char nomeArquivo[32];
@@ -418,7 +441,7 @@ void pesquisaDeSatisfacao(int dia, int mes, int ano) {
 int main() {
     setlocale(LC_ALL, "Portuguese");
 
-    char opcao = '0';
+    char opcao[20] = "0";
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);
     int dia = tm.tm_mday;
@@ -434,30 +457,33 @@ int main() {
     while (1) {
         mostraOpcoes();
         imprime("\n\tQual ação deseja fazer? ");
-        printf("\t"); opcao = getchar();
+        printf("\t"); gets(opcao);
 
         imprime("\n");
-        if (opcao == '1') {
+        if (opcao[0] == '1') {
             vendaDeIngresso(dia, mes, ano);
-        } else if (opcao == '2') {
+            gets();
+        } else if (opcao[0] == '2') {
             mostraOsPrecos();
-        } else if (opcao == '3') {
+        } else if (opcao[0] == '3') {
             buscaIngressoPorId();
-        } else if (opcao == '4') {
-            listarVendasDoDia();
-        } else if (opcao == '5') {
-            relatorioVendasDoMes();
-        } else if (opcao == '6') {
+            gets();
+        } else if (opcao[0] == '4') {
+            listarVendasDoDia(ano);
+            gets();
+        } else if (opcao[0] == '5') {
+            relatorioVendasDoMes(ano);
+            gets();
+        } else if (opcao[0] == '6') {
             pesquisaDeSatisfacao(dia, mes, ano);
-        } else if (opcao == '7') {
+            getchar();
+        } else if (opcao[0] == '7') {
             imprime("Desligando o sistema!");
             break;
         } else {
-            opcao = '0';
             imprime("Escolha uma opção válida!");
         }
         pausar();
-        getchar();
     }
 
     imprime("\n - Fim - \n");
