@@ -41,26 +41,38 @@ void insereLinhaCSV(char numeroQuestao, char respostaUsuario, int acertou, char 
 	fclose(respostas);
 }
 
+int validaQuestionarioEscolhido(char questionario) {
+	char validos[] = "AaOoJjSsXx";
+	for (int i = 0; i < strlen(validos); i++) {
+		if (validos[i] == questionario) return 1;
+	}
+	return 0;
+}
+
+int validaRespostaUsuario(char resposta) {
+	if (resposta == 'A' || resposta == 'a') return 'a';
+	if (resposta == 'B' || resposta == 'b') return 'b';
+	if (resposta == 'C' || resposta == 'c') return 'c';
+
+	return 'x';
+}
+
 int main() {
 	setlocale(LC_ALL, "Portuguese");
 	while (1) {
 		int acertos = 0;
 		char questionarioEscolhido = '0';
+		int valido = 0;
 		do {
 			printf("\n\tQual questionário você deseja responder?\n");
 			printf("\n\tDigite S para Santos Dumont, O para Olimpíadas, A para Semana de Arte Moderna, J para Java ou X para sair\n\t");
 			questionarioEscolhido = getchar();
-
-			if (questionarioEscolhido != 'A' && questionarioEscolhido != 'a' && questionarioEscolhido != 'O' &&
-				questionarioEscolhido != 'o' && questionarioEscolhido != 'J' && questionarioEscolhido != 'j' && 
-			questionarioEscolhido != 'S' && questionarioEscolhido != 's' && questionarioEscolhido != 'x' && 
-			questionarioEscolhido != 'X') {
+			valido = validaQuestionarioEscolhido(questionarioEscolhido);
+			if (valido == 0) {
 				printf("\n\tDigite uma opção válida!\n");
+				getchar();
 			}
-		} while (questionarioEscolhido != 'A' && questionarioEscolhido != 'a' && questionarioEscolhido != 'O' &&
-				questionarioEscolhido != 'o' && questionarioEscolhido != 'J' && questionarioEscolhido != 'j' && 
-				questionarioEscolhido != 'S' && questionarioEscolhido != 's' && questionarioEscolhido != 'x' && 
-				questionarioEscolhido != 'X');
+		} while (valido == 0);
 
 		char* nomeArquivo;
 
@@ -119,13 +131,14 @@ int main() {
 			getchar();
 			do {
 				printf("\n\tDigite sua resposta (a, b ou c): ");
-				respostaUsuario = getchar();
+				respostaUsuario = validaRespostaUsuario(getchar());
 
-				if (respostaUsuario != 'a' && respostaUsuario != 'b' && respostaUsuario != 'c') {
+				if (respostaUsuario == 'x') {
 					printf("\n\tDigite uma opção válida (a, b ou c)\n");
+					pausar();
 					getchar();
 				}
-			} while(respostaUsuario != 'a' && respostaUsuario != 'b' && respostaUsuario != 'c');
+			} while(respostaUsuario == 'x');
 
 			int acertou = 0;
 			if (respostaUsuario == alternativaCorreta) {
@@ -145,5 +158,6 @@ int main() {
 		pausar();
 		getchar();
 	}
+	printf("\n\n\tDesligando, obrigado por jogar!\n\n");
 	return 0;
 }

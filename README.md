@@ -2,7 +2,7 @@
 
 ## Museu Multitemático James Gosling
 
-Nesse repositório encontra-se o código do projeto desenvolvido para a conclusão do segundo semestre do curso de Análise e Desenvolvimento de Sistemas da Universidade Paulista. A documentação detalhada do código está presente no arquivo "documentacaoPimII.docx".
+Nesse repositório encontra-se o código do projeto desenvolvido para a conclusão do segundo semestre do curso de Análise e Desenvolvimento de Sistemas da Universidade Paulista. A documentação detalhada do código está presente no arquivo "documentacaoPimII.docx". O código está separado nas pastas: sistemaPrincipal, que contém as funcionalidades principais do museu e de uso voltado para vendas de ingressos e para a pesquisa de satisfação; e na pasta questionario, que contém o programa que estará nas exposições e que interage com o usuário apresentando perguntas e coletando suas respostas.
 
 ### Requisitos
 
@@ -59,3 +59,9 @@ cd ./questionario
 make questionario
 ./questionario
 ```
+
+### Extensões para melhorar sua experiência
+
+- Rainbow CSV : Ajuda na visualização de arquivos CSV, deixando cada coluna de uma cor
+- Markdown Preview Enhanced : Proporciona uma visualização formatada de arquivos MD, acionada com as teclas Ctrl + Shift + V
+- C/C++ : Extensão da Microsoft com funcionalidades que facilitam o desenvolvimento em C e C++, como referências das bibliotecas e preenchimento automático
